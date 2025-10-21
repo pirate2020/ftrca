@@ -42,7 +42,7 @@ class MainActivity : FlutterActivity() {
         var flutterMethodChannel: MethodChannel? = null
         private var _rdClipboardManager: RdClipboardManager? = null
         val rdClipboardManager: RdClipboardManager?
-            get() = _rdClipboardManager;
+            get() = _rdClipboardManager;     
     }
 
     private val channelTag = "mChannel"
@@ -120,23 +120,6 @@ class MainActivity : FlutterActivity() {
             mainService = null
         }
     }
-	
-	private fun getDeviceSerial(): String {
-		return try {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				Build.getSerial()
-			} else {
-				@Suppress("DEPRECATION")
-				Build.SERIAL
-			}
-		} catch (e: SecurityException) {
-			Log.e("MainActivity", "Permission denied for getSerial(): ${e.message}")
-			"unknown"
-		} catch (e: Exception) {
-			Log.e("MainActivity", "getSerial() failed: ${e.message}")
-			"unknown"
-		}
-	}
 
     private fun initFlutterChannel(flutterMethodChannel: MethodChannel) {
         flutterMethodChannel.setMethodCallHandler { call, result ->
@@ -286,10 +269,6 @@ class MainActivity : FlutterActivity() {
                 "on_voice_call_closed" -> {
                     onVoiceCallClosed()
                 }
-				"get_serial_number" -> {
-					val serial = getDeviceSerial()
-					result.success(serial)
-				}
                 else -> {
                     result.error("-1", "No such method", null)
                 }
