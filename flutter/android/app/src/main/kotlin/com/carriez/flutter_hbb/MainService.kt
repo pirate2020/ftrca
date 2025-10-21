@@ -111,23 +111,6 @@ class MainService : Service() {
     }
 
     @Keep
-    fun getSerialNumber(): String {
-        try {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Build.getSerial()
-            } else {
-                "unknown"
-            }
-        } catch (e: SecurityException) {
-            Log.e(logTag, "Permission denied for getting serial number", e)
-            return "unknown"
-        } catch (e: Exception) {
-            Log.e(logTag, "Error getting serial number", e)
-            return "unknown"
-        }
-    }
-
-    @Keep
     fun rustSetByName(name: String, arg1: String, arg2: String) {
         when (name) {
             "add_connection" -> {
@@ -221,6 +204,26 @@ class MainService : Service() {
             get() = _isStart
         val isAudioStart: Boolean
             get() = _isAudioStart
+        @Keep
+        @JvmStatic
+        fun getSerialNumber(): String {
+            return try {
+                val serial = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Build.getSerial()
+                } else {
+                    @Suppress("DEPRECATION")
+                    "unknown"
+                }
+                // 确保不为空
+                serial ?: "unknown"
+            } catch (e: SecurityException) {
+                Log.e("MainService", "获取序列号权限被拒绝", e)
+                "unknown"
+            } catch (e: Exception) {
+                Log.e("MainService", "获取序列号失败", e)
+                "unknown"
+            }
+        }    
     }
 
     private val logTag = "LOG_SERVICE"
