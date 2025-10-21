@@ -111,6 +111,23 @@ class MainService : Service() {
     }
 
     @Keep
+    fun getSerialNumber(): String {
+        try {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Build.getSerial()
+            } else {
+                "unknown"
+            }
+        } catch (e: SecurityException) {
+            Log.e(logTag, "Permission denied for getting serial number", e)
+            return "unknown"
+        } catch (e: Exception) {
+            Log.e(logTag, "Error getting serial number", e)
+            return "unknown"
+        }
+    }
+
+    @Keep
     fun rustSetByName(name: String, arg1: String, arg2: String) {
         when (name) {
             "add_connection" -> {
