@@ -33,6 +33,8 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import kotlin.concurrent.thread
+import android.Manifest
+import android.content.pm.PackageManager
 
 
 class MainActivity : FlutterActivity() {
@@ -294,6 +296,24 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
+	
+	fun getSerialNumber(): String {
+	    if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+			requestPermissions(arrayOf(android.Manifest.permission.READ_PHONE_STATE), 100)
+			Log.w("MainActivity", "READ_PHONE_STATE permission not granted, returning unknown.")
+			return "unknown"
+		}
+		return try {
+			val serial = android.os.Build.getSerial()  // Android 8+
+			if (serial == null || serial == "unknown") {
+				android.os.Build.SERIAL ?: "unknown"
+			} else {
+				serial
+			}
+		} catch (e: Exception) {
+			"unknown"
+		}
+	}
 
     private fun setCodecInfo() {
         val codecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
