@@ -188,26 +188,6 @@ class MainService : Service() {
         }
     }
 
-    @Keep
-    fun getSerialNumber(): String {
-        return try {
-            val serial = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Build.getSerial()
-            } else {
-                @Suppress("DEPRECATION")
-                "unknown"
-            }
-            // 确保不为空
-            serial ?: "unknown"
-        } catch (e: SecurityException) {
-            Log.e("MainService", "获取序列号权限被拒绝", e)
-            "unknown"
-        } catch (e: Exception) {
-            Log.e("MainService", "获取序列号失败", e)
-            "unknown"
-        }
-    }        
-
     private var serviceLooper: Looper? = null
     private var serviceHandler: Handler? = null
 

@@ -276,26 +276,6 @@ class MainActivity : FlutterActivity() {
         }
     }
 	
-	fun getSerialNumber(): String {
-	    Log.w("MainActivity", "getSerialNumber() called")
-	    if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-			requestPermissions(arrayOf(android.Manifest.permission.READ_PHONE_STATE), 100)
-			Log.w("MainActivity", "READ_PHONE_STATE permission not granted, returning unknown.")
-			return "unknown"
-		}
-		return try {
-			val serial = android.os.Build.getSerial()  // Android 8+
-			Log.w("MainActivity", "Build.getSerial() returned: $serial")
-			if (serial == null || serial == "unknown") {
-				android.os.Build.SERIAL ?: "unknown"
-			} else {
-				serial
-			}
-		} catch (e: Exception) {
-			"unknown"
-		}
-	}
-
     private fun setCodecInfo() {
         val codecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
         val codecs = codecList.codecInfos
